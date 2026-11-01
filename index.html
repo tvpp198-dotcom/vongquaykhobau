@@ -4,174 +4,234 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vòng quay may mắn</title>
+<title>Vòng quay kho báu</title>
 
 <style>
-* {
-    box-sizing: border-box;
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px 10px;
+    font-family:Georgia,serif;
+    color:#ffe7a4;
+    background:
+        radial-gradient(ellipse at top,#51401e 0%,#171b25 48%,#090d16 100%);
 }
 
-body {
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #f3f3fa;
-    font-family: Arial, sans-serif;
+.container{
+    width:min(650px,100%);
+    padding:25px 16px 30px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+    border:2px solid #9b742e;
+    border-radius:25px;
+    background:
+        linear-gradient(145deg,#252b35,#111722 70%);
+    box-shadow:
+        0 0 0 5px #493719,
+        0 0 35px #d5a53c33,
+        inset 0 0 30px #c99b3718;
 }
 
-.container {
-    width: min(620px, 95%);
-    padding: 25px 15px;
-    background: #fafaff;
-    border-radius: 28px;
-    text-align: center;
+.container:before,
+.container:after{
+    content:"✦";
+    position:absolute;
+    color:#e6bd63;
+    font-size:35px;
+    opacity:.55;
 }
 
-h2 {
-    font-size: 21px;
-    color: #171d35;
-    margin: 0 0 30px;
+.container:before{top:15px;left:18px}
+.container:after{top:15px;right:18px}
+
+.heading{
+    font-size:24px;
+    color:#ffdf8b;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    text-shadow:0 2px 12px #e5ae3d66;
+    margin:8px 0 7px;
 }
 
-.tag {
-    display: inline-block;
-    margin-left: 8px;
-    padding: 5px 10px;
-    background: #eeeeff;
-    color: #604cff;
-    border-radius: 20px;
-    font-size: 10px;
-    vertical-align: middle;
+.subtitle{
+    font:11px Arial;
+    letter-spacing:3px;
+    color:#c9a45c;
+    margin-bottom:25px;
 }
 
-.wheel-area {
-    position: relative;
-    width: min(500px, 88vw);
-    aspect-ratio: 1;
-    margin: auto;
+.treasure{
+    font-size:39px;
+    margin-bottom:5px;
+    filter:drop-shadow(0 4px 5px #000);
 }
 
-.wheel-border {
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    border: 6px solid white;
-    box-shadow: 0 0 0 3px #dedee7, 0 8px 25px #00000018;
-    overflow: hidden;
+.wheel-area{
+    width:min(490px,83vw);
+    aspect-ratio:1;
+    margin:0 auto;
+    position:relative;
+    padding:9px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#fff0ae,#a97720,#fff0ae,#8d5e17);
+    box-shadow:
+        0 0 0 3px #593c13,
+        0 0 0 7px #d9ae53,
+        0 0 30px #e8b94a55,
+        0 12px 30px #0009;
 }
 
-#wheel {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    transition: transform 5s cubic-bezier(.12,.75,.12,1);
+#wheel{
+    width:100%;
+    height:100%;
+    border-radius:50%;
+    position:relative;
+    overflow:hidden;
+    border:4px solid #fff0bd;
+    transition:transform 5s cubic-bezier(.12,.75,.12,1);
 }
 
-.pointer {
-    position: absolute;
-    right: -30px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 0;
-    height: 0;
-    border-top: 19px solid transparent;
-    border-bottom: 19px solid transparent;
-    border-right: 0;
-    border-left: 32px solid #17182d;
-    z-index: 5;
-    filter: drop-shadow(0 3px 3px #0004);
+.label{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:115px;
+    margin-left:-57.5px;
+    margin-top:-17px;
+    text-align:center;
+    color:#fff8df;
+    font-family:Arial,sans-serif;
+    font-weight:900;
+    font-size:clamp(11px,2.7vw,16px);
+    line-height:1.4;
+    text-shadow:0 2px 4px #542d08,0 0 7px #fff4b0;
+    pointer-events:none;
 }
 
-.center {
-    position: absolute;
-    width: 78px;
-    height: 78px;
-    background: white;
-    border-radius: 50%;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%,-50%);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #29264d;
-    font-size: 18px;
-    font-weight: 900;
-    box-shadow: 0 2px 8px #0002;
-    z-index: 3;
+.pointer{
+    position:absolute;
+    z-index:5;
+    right:-20px;
+    top:50%;
+    transform:translateY(-50%);
+    width:0;
+    height:0;
+    border-top:19px solid transparent;
+    border-bottom:19px solid transparent;
+    border-right:0;
+    border-left:33px solid #fff0b4;
+    filter:drop-shadow(0 3px 4px #000);
 }
 
-.label {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 100px;
-    margin-left: -50px;
-    margin-top: -15px;
-    color: white;
-    font-weight: 900;
-    font-size: clamp(12px, 3vw, 18px);
-    text-shadow: 2px 3px 3px #0005;
-    text-align: center;
-    transform-origin: center;
-    pointer-events: none;
+.pointer:after{
+    content:"";
+    position:absolute;
+    left:-31px;
+    top:-12px;
+    border-top:12px solid transparent;
+    border-bottom:12px solid transparent;
+    border-left:21px solid #9c2929;
 }
 
-.spin-btn {
-    margin-top: 35px;
-    padding: 15px 25px;
-    border: none;
-    border-radius: 15px;
-    background: linear-gradient(120deg,#6651f6,#7951ff);
-    color: white;
-    font-weight: bold;
-    font-size: 15px;
-    cursor: pointer;
-    box-shadow: 0 8px 20px #6853f444;
+.center{
+    position:absolute;
+    z-index:6;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:76px;
+    height:76px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    background:radial-gradient(circle,#fff1b8,#d6a343 75%);
+    border:4px solid #fff0b4;
+    color:#57370e;
+    font:bold 15px Arial;
+    box-shadow:0 3px 12px #0008,inset 0 0 8px #fff;
 }
 
-.spin-btn:hover {
-    transform: translateY(-2px);
+.center small{
+    font-size:9px;
+    margin-top:3px;
 }
 
-.spin-btn:disabled {
-    opacity: .6;
-    cursor: not-allowed;
+.spin-btn{
+    margin-top:35px;
+    padding:15px 32px;
+    border:2px solid #ffe4a0;
+    border-radius:13px;
+    background:linear-gradient(135deg,#f8d77c,#b77b20,#edc15a);
+    color:#4c2e0b;
+    font-weight:900;
+    font-size:15px;
+    cursor:pointer;
+    box-shadow:0 5px 18px #dba53c55,inset 0 1px 3px white;
+    transition:.2s;
 }
 
-.result {
-    margin-top: 22px;
-    padding: 15px;
-    border-radius: 15px;
-    background: #f0edff;
-    color: #4031a2;
-    font-weight: bold;
-    font-size: 16px;
-    display: none;
-    line-height: 1.6;
+.spin-btn:hover{
+    transform:translateY(-3px);
+    filter:brightness(1.1);
 }
 
-.note {
-    margin-top: 18px;
-    font-size: 11px;
-    color: #999;
+.spin-btn:disabled{
+    opacity:.6;
+    cursor:not-allowed;
 }
 
-@media(max-width:400px) {
-    .pointer {
-        right: -20px;
-        border-top-width: 14px;
-        border-bottom-width: 14px;
-        border-left-width: 24px;
-    }
+.result{
+    display:none;
+    margin:22px auto 0;
+    max-width:420px;
+    padding:17px;
+    border:1px solid #d8ae59;
+    border-radius:14px;
+    background:linear-gradient(135deg,#42331c,#241c14);
+    color:#ffe5a0;
+    font:bold 16px Arial;
+    line-height:1.7;
+    box-shadow:0 0 18px #d6a13d22;
+}
 
-    .center {
-        width: 62px;
-        height: 62px;
-        font-size: 14px;
-    }
+.result .gift{
+    font-size:37px;
+    display:block;
+    margin-bottom:5px;
+}
+
+.note{
+    margin-top:20px;
+    color:#b99b62;
+    font:10px Arial;
+    letter-spacing:1px;
+}
+
+.decor{
+    position:absolute;
+    color:#d8ae59;
+    opacity:.6;
+    font-size:20px;
+    pointer-events:none;
+}
+
+.d1{left:20px;top:47%}
+.d2{right:20px;top:47%}
+.d3{left:30px;bottom:100px}
+.d4{right:30px;bottom:100px}
+
+@media(max-width:400px){
+    .heading{font-size:19px}
+    .center{width:62px;height:62px;font-size:12px}
+    .label{width:90px;margin-left:-45px}
 }
 </style>
 </head>
@@ -180,36 +240,43 @@ h2 {
 
 <div class="container">
 
-    <h2>
-        Vòng quay may mắn
-        <span class="tag">SỬ VIỆT</span>
-    </h2>
+    <div class="treasure">👑 💰 🏴‍☠️</div>
+
+    <h1 class="heading">Vòng quay kho báu</h1>
+    <div class="subtitle">✦ SĂN KHO BÁU · NHẬN QUÀ MAY MẮN ✦</div>
 
     <div class="wheel-area">
 
-        <div class="wheel-border">
-            <div id="wheel"></div>
-        </div>
+        <div id="wheel"></div>
 
         <div class="pointer"></div>
-        <div class="center">SPIN</div>
+
+        <div class="center">
+            SPIN
+            <small>LUCKY</small>
+        </div>
 
     </div>
 
     <button class="spin-btn" id="spinBtn" onclick="spin()">
-        ⟳ Quay ngay
+        ✨ QUAY NGAY ✨
     </button>
 
     <div class="result" id="result"></div>
 
     <div class="note">
-        Chúc bạn may mắn và nhận được phần quà yêu thích!
+        ✦ CHÚC BẠN TÌM ĐƯỢC KHO BÁU ✦
     </div>
+
+    <span class="decor d1">✧</span>
+    <span class="decor d2">✦</span>
+    <span class="decor d3">❖</span>
+    <span class="decor d4">✧</span>
 
 </div>
 
 <script>
-const prizes = [
+const prizes=[
     "XU VÀNG",
     "XU VÀNG",
     "XU VÀNG",
@@ -219,96 +286,107 @@ const prizes = [
     "XU VÀNG"
 ];
 
-const colors = [
-    "#6255f5",
-    "#ec4599",
-    "#20c467",
-    "#f5a000",
-    "#08b6cc",
-    "#ef4148",
-    "#8e5be8"
+const colors=[
+    "#a97820",
+    "#bd8830",
+    "#d3a642",
+    "#96651c",
+    "#e0b84e",
+    "#a87525",
+    "#c99535"
 ];
 
-const wheel = document.getElementById("wheel");
-const result = document.getElementById("result");
-const spinBtn = document.getElementById("spinBtn");
+const wheel=document.getElementById("wheel");
+const result=document.getElementById("result");
+const spinBtn=document.getElementById("spinBtn");
 
-const count = prizes.length;
-const angle = 360 / count;
+const count=prizes.length;
+const angle=360/count;
 
-let rotation = 0;
-let spinning = false;
+let rotation=0;
+let spinning=false;
 
-// Tạo các ô trên vòng quay
-function createWheel() {
-    let gradient = [];
+// Tạo màu và các ô trên vòng quay
+function createWheel(){
 
-    for (let i = 0; i < count; i++) {
-        let start = i * angle;
-        let end = (i + 1) * angle;
+    let gradient=[];
+
+    for(let i=0;i<count;i++){
+        let start=i*angle;
+        let end=(i+1)*angle;
 
         gradient.push(
             `${colors[i]} ${start}deg ${end}deg`
         );
     }
 
-    wheel.style.background =
-        `conic-gradient(from -${angle / 2}deg, ${gradient.join(",")})`;
+    wheel.style.background=
+        `conic-gradient(from ${90-angle/2}deg,${gradient.join(",")})`;
 
-    for (let i = 0; i < count; i++) {
-        let label = document.createElement("div");
-        label.className = "label";
+    for(let i=0;i<count;i++){
 
-        let centerAngle = i * angle;
+        let label=document.createElement("div");
+        label.className="label";
 
-        label.innerHTML = prizes[i] === "XU VÀNG"
-            ? "🪙<br>Xu vàng"
-            : "🎁<br>Móc khóa nón lá";
+        if(prizes[i]==="XU VÀNG"){
+            label.innerHTML="🪙<br>XU VÀNG";
+        }else{
+            label.innerHTML="🎁<br>MÓC KHÓA<br>NÓN LÁ";
+        }
 
-        label.style.transform =
-            `rotate(${centerAngle}deg) translateY(-${wheel.offsetWidth * 0.34}px) rotate(${-centerAngle}deg)`;
+        label.style.transform=
+            `rotate(${90+i*angle}deg) translateY(-${wheel.offsetWidth*.34}px) rotate(${-90-i*angle}deg)`;
 
         wheel.appendChild(label);
     }
 }
 
-// Xoay vòng quay
-function spin() {
-    if (spinning) return;
+// Quay ngẫu nhiên
+function spin(){
 
-    spinning = true;
-    spinBtn.disabled = true;
-    result.style.display = "none";
+    if(spinning)return;
 
-    // Chọn ngẫu nhiên một trong 7 phần quà
-    const selected = Math.floor(Math.random() * count);
+    spinning=true;
+    spinBtn.disabled=true;
+    result.style.display="none";
 
-    // Góc tâm của ô được chọn
-    const selectedCenter = selected * angle;
+    const selected=Math.floor(Math.random()*count);
 
-    // Tính góc để ô được chọn nằm dưới kim chỉ
-    const target = (360 - selectedCenter) % 360;
+    // Ô được chọn sẽ dừng tại vị trí kim chỉ bên phải
+    const target=(360-selected*angle)%360;
 
-    const current = rotation % 360;
-    const extra = (target - current + 360) % 360;
+    const current=rotation%360;
+    const extra=(target-current+360)%360;
 
-    rotation += 360 * 6 + extra;
+    rotation+=360*6+extra;
 
-    wheel.style.transform = `rotate(${rotation}deg)`;
+    wheel.style.transform=`rotate(${rotation}deg)`;
 
-    setTimeout(() => {
-        const prize = prizes[selected];
+    setTimeout(()=>{
 
-        result.innerHTML = prize === "XU VÀNG"
-            ? "🎉 CHÚC MỪNG BẠN!<br>Bạn nhận được 🪙 XU VÀNG!"
-            : "🎉 CHÚC MỪNG BẠN!<br>Bạn nhận được 🎁 MÓC KHÓA NÓN LÁ!";
+        const prize=prizes[selected];
 
-        result.style.display = "block";
+        if(prize==="XU VÀNG"){
+            result.innerHTML=`
+                <span class="gift">🪙</span>
+                ✨ CHÚC MỪNG BẠN! ✨<br>
+                BẠN NHẬN ĐƯỢC<br>
+                <strong style="color:#ffcf57">XU VÀNG</strong>
+            `;
+        }else{
+            result.innerHTML=`
+                <span class="gift">🎁</span>
+                ✨ KHO BÁU ĐẶC BIỆT! ✨<br>
+                BẠN NHẬN ĐƯỢC<br>
+                <strong style="color:#ffcf57">MÓC KHÓA NÓN LÁ</strong>
+            `;
+        }
 
-        spinBtn.disabled = false;
-        spinning = false;
+        result.style.display="block";
+        spinBtn.disabled=false;
+        spinning=false;
 
-    }, 5100);
+    },5100);
 }
 
 createWheel();
