@@ -1,0 +1,318 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vòng quay may mắn</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f3f3fa;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    width: min(620px, 95%);
+    padding: 25px 15px;
+    background: #fafaff;
+    border-radius: 28px;
+    text-align: center;
+}
+
+h2 {
+    font-size: 21px;
+    color: #171d35;
+    margin: 0 0 30px;
+}
+
+.tag {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 5px 10px;
+    background: #eeeeff;
+    color: #604cff;
+    border-radius: 20px;
+    font-size: 10px;
+    vertical-align: middle;
+}
+
+.wheel-area {
+    position: relative;
+    width: min(500px, 88vw);
+    aspect-ratio: 1;
+    margin: auto;
+}
+
+.wheel-border {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 6px solid white;
+    box-shadow: 0 0 0 3px #dedee7, 0 8px 25px #00000018;
+    overflow: hidden;
+}
+
+#wheel {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    transition: transform 5s cubic-bezier(.12,.75,.12,1);
+}
+
+.pointer {
+    position: absolute;
+    right: -30px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 19px solid transparent;
+    border-bottom: 19px solid transparent;
+    border-right: 0;
+    border-left: 32px solid #17182d;
+    z-index: 5;
+    filter: drop-shadow(0 3px 3px #0004);
+}
+
+.center {
+    position: absolute;
+    width: 78px;
+    height: 78px;
+    background: white;
+    border-radius: 50%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #29264d;
+    font-size: 18px;
+    font-weight: 900;
+    box-shadow: 0 2px 8px #0002;
+    z-index: 3;
+}
+
+.label {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 100px;
+    margin-left: -50px;
+    margin-top: -15px;
+    color: white;
+    font-weight: 900;
+    font-size: clamp(12px, 3vw, 18px);
+    text-shadow: 2px 3px 3px #0005;
+    text-align: center;
+    transform-origin: center;
+    pointer-events: none;
+}
+
+.spin-btn {
+    margin-top: 35px;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 15px;
+    background: linear-gradient(120deg,#6651f6,#7951ff);
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px #6853f444;
+}
+
+.spin-btn:hover {
+    transform: translateY(-2px);
+}
+
+.spin-btn:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+.result {
+    margin-top: 22px;
+    padding: 15px;
+    border-radius: 15px;
+    background: #f0edff;
+    color: #4031a2;
+    font-weight: bold;
+    font-size: 16px;
+    display: none;
+    line-height: 1.6;
+}
+
+.note {
+    margin-top: 18px;
+    font-size: 11px;
+    color: #999;
+}
+
+@media(max-width:400px) {
+    .pointer {
+        right: -20px;
+        border-top-width: 14px;
+        border-bottom-width: 14px;
+        border-left-width: 24px;
+    }
+
+    .center {
+        width: 62px;
+        height: 62px;
+        font-size: 14px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>
+        Vòng quay may mắn
+        <span class="tag">SỬ VIỆT</span>
+    </h2>
+
+    <div class="wheel-area">
+
+        <div class="wheel-border">
+            <div id="wheel"></div>
+        </div>
+
+        <div class="pointer"></div>
+        <div class="center">SPIN</div>
+
+    </div>
+
+    <button class="spin-btn" id="spinBtn" onclick="spin()">
+        ⟳ Quay ngay
+    </button>
+
+    <div class="result" id="result"></div>
+
+    <div class="note">
+        Chúc bạn may mắn và nhận được phần quà yêu thích!
+    </div>
+
+</div>
+
+<script>
+const prizes = [
+    "XU VÀNG",
+    "XU VÀNG",
+    "XU VÀNG",
+    "XU VÀNG",
+    "MÓC KHÓA NÓN LÁ",
+    "XU VÀNG",
+    "XU VÀNG"
+];
+
+const colors = [
+    "#6255f5",
+    "#ec4599",
+    "#20c467",
+    "#f5a000",
+    "#08b6cc",
+    "#ef4148",
+    "#8e5be8"
+];
+
+const wheel = document.getElementById("wheel");
+const result = document.getElementById("result");
+const spinBtn = document.getElementById("spinBtn");
+
+const count = prizes.length;
+const angle = 360 / count;
+
+let rotation = 0;
+let spinning = false;
+
+// Tạo các ô trên vòng quay
+function createWheel() {
+    let gradient = [];
+
+    for (let i = 0; i < count; i++) {
+        let start = i * angle;
+        let end = (i + 1) * angle;
+
+        gradient.push(
+            `${colors[i]} ${start}deg ${end}deg`
+        );
+    }
+
+    wheel.style.background =
+        `conic-gradient(from -${angle / 2}deg, ${gradient.join(",")})`;
+
+    for (let i = 0; i < count; i++) {
+        let label = document.createElement("div");
+        label.className = "label";
+
+        let centerAngle = i * angle;
+
+        label.innerHTML = prizes[i] === "XU VÀNG"
+            ? "🪙<br>Xu vàng"
+            : "🎁<br>Móc khóa nón lá";
+
+        label.style.transform =
+            `rotate(${centerAngle}deg) translateY(-${wheel.offsetWidth * 0.34}px) rotate(${-centerAngle}deg)`;
+
+        wheel.appendChild(label);
+    }
+}
+
+// Xoay vòng quay
+function spin() {
+    if (spinning) return;
+
+    spinning = true;
+    spinBtn.disabled = true;
+    result.style.display = "none";
+
+    // Chọn ngẫu nhiên một trong 7 phần quà
+    const selected = Math.floor(Math.random() * count);
+
+    // Góc tâm của ô được chọn
+    const selectedCenter = selected * angle;
+
+    // Tính góc để ô được chọn nằm dưới kim chỉ
+    const target = (360 - selectedCenter) % 360;
+
+    const current = rotation % 360;
+    const extra = (target - current + 360) % 360;
+
+    rotation += 360 * 6 + extra;
+
+    wheel.style.transform = `rotate(${rotation}deg)`;
+
+    setTimeout(() => {
+        const prize = prizes[selected];
+
+        result.innerHTML = prize === "XU VÀNG"
+            ? "🎉 CHÚC MỪNG BẠN!<br>Bạn nhận được 🪙 XU VÀNG!"
+            : "🎉 CHÚC MỪNG BẠN!<br>Bạn nhận được 🎁 MÓC KHÓA NÓN LÁ!";
+
+        result.style.display = "block";
+
+        spinBtn.disabled = false;
+        spinning = false;
+
+    }, 5100);
+}
+
+createWheel();
+</script>
+
+</body>
+</html>
